@@ -11,8 +11,8 @@
     },
     .dependencies = .{
         .system_sdk = .{
-            .url = "https://github.com/zig-gamedev/system-sdk/archive/refs/tags/v0.2.0.tar.gz",
-            .hash = "122035336d7535f655fe0ece31cea0fbf8ad2f1e42f64b073995050a425ca8f8fbdc",
+            .url = "https://github.com/zig-gamedev/system-sdk/archive/908f556c874e29392acfbbb21cc14923b0cd4e18.tar.gz",
+            .hash = "122071280f7f0852ef6d2cd74f7c6593511eb48ec3b1b88d1457cd2453eb8597d925",
         },
     },
 }

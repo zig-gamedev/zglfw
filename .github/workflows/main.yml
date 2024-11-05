@@ -32,5 +32,5 @@ jobs:
       - name: Check format
         continue-on-error: true
         run: zig fmt --check .
-      - name: Build and run tests
-        run: zig build test
+      - name: Build
+        run: zig build

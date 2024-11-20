@@ -13,7 +13,7 @@ comptime {
 // Misc
 //
 //--------------------------------------------------------------------------------------------------
-pub const Hint = enum(i32) {
+pub const InitHint = enum(i32) {
     joystick_hat_buttons = 0x00050001,
     angle_platform_type = 0x00050002,
     platform = 0x00050003,
@@ -22,10 +22,10 @@ pub const Hint = enum(i32) {
     x11_xcb_vulkan_surface = 0x00052001,
     wayland_libdecor = 0x00053001,
 
-    pub fn set(hint: Hint, value: bool) void {
+    pub fn set(hint: InitHint, value: bool) void {
         glfwInitHint(hint, @intFromBool(value));
     }
-    extern fn glfwInitHint(hint: Hint, value: i32) void;
+    extern fn glfwInitHint(hint: InitHint, value: i32) void;
 };
 
 pub fn init() Error!void {

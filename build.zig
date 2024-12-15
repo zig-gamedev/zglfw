@@ -36,6 +36,8 @@ pub fn build(b: *std.Build) void {
         },
     });
 
+    if (target.result.os.tag == .emscripten) return;
+
     const glfw = if (options.shared) blk: {
         const lib = b.addSharedLibrary(.{
             .name = "glfw",

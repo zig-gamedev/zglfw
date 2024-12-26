@@ -45,7 +45,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         });
         if (target.result.os.tag == .windows) {
-            lib.defineCMacro("_GLFW_BUILD_DLL", null);
+            lib.root_module.addCMacro("_GLFW_BUILD_DLL", "");
         }
         break :blk lib;
     } else b.addStaticLibrary(.{
@@ -187,7 +187,7 @@ pub fn build(b: *std.Build) void {
                     },
                     .flags = &.{},
                 });
-                glfw.defineCMacro("_GLFW_X11", "1");
+                glfw.root_module.addCMacro("_GLFW_X11", "1");
                 glfw.linkSystemLibrary("X11");
             }
             if (options.enable_wayland) {
@@ -199,7 +199,7 @@ pub fn build(b: *std.Build) void {
                     },
                     .flags = &.{},
                 });
-                glfw.defineCMacro("_GLFW_WAYLAND", "1");
+                glfw.root_module.addCMacro("_GLFW_WAYLAND", "1");
             }
         },
         else => {},

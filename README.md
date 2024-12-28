@@ -12,7 +12,7 @@ pub fn build(b: *std.Build) void {
     const zglfw = b.dependency("zglfw", .{});
     exe.root_module.addImport("zglfw", zglfw.module("root"));
 
-    if (target.result.os.tag != .emscrpten) {
+    if (target.result.os.tag != .emscripten) {
         exe.linkLibrary(zglfw.artifact("glfw"));
     }
 }

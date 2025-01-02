@@ -54,6 +54,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     b.installArtifact(glfw);
+    glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
     glfw.addIncludePath(b.path("libs/glfw/include"));
     glfw.linkLibC();

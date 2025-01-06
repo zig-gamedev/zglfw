@@ -912,7 +912,7 @@ extern fn glfwWindowShouldClose(window: *Window) Bool;
 pub fn setWindowShouldClose(window: *Window, should_close: bool) void {
     return glfwSetWindowShouldClose(window, if (should_close) TRUE else FALSE);
 }
-extern fn glfwSetWindowShouldClose(*Window, should_close: c_int) void;
+extern fn glfwSetWindowShouldClose(*Window, should_close: Bool) void;
 
 pub const setCursor = glfwSetCursor;
 extern fn glfwSetCursor(*Window, ?*Cursor) void;

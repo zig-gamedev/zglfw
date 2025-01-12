@@ -373,12 +373,14 @@ pub fn createCursor(width: i32, height: i32, pixels: []const u8, xhot: i32, yhot
     };
     if (glfwCreateCursor(&image, xhot, yhot)) |ptr| return ptr;
     try maybeError();
+    unreachable;
 }
 extern fn glfwCreateCursor(image: *const Image, xhot: c_int, yhot: c_int) ?*Cursor;
 
 pub fn createStandardCursor(shape: Cursor.Shape) Error!*Cursor {
     if (glfwCreateStandardCursor(shape)) |ptr| return ptr;
     try maybeError();
+    unreachable;
 }
 extern fn glfwCreateStandardCursor(shape: Cursor.Shape) ?*Cursor;
 
@@ -544,9 +546,9 @@ pub const Monitor = opaque {
     pub const getVideoMode = zglfw.getVideoMode;
     pub const getVideoModes = zglfw.getVideoModes;
 
-    pub fn getPos(self: Monitor) []f32 {
-        var xpos: i32 = 0;
-        var ypos: i32 = 0;
+    pub fn getPos(self: *Monitor) [2]c_int {
+        var xpos: c_int = 0;
+        var ypos: c_int = 0;
         getMonitorPos(self, &xpos, &ypos);
         return .{ xpos, ypos };
     }
@@ -581,6 +583,7 @@ pub fn getVideoMode(monitor: *Monitor) Error!*VideoMode {
         return video_mode;
     }
     try maybeError();
+    unreachable;
 }
 extern fn glfwGetVideoMode(*Monitor) ?*VideoMode;
 
@@ -674,11 +677,11 @@ pub const Window = opaque {
     pub const setAttribute = zglfw.setWindowAttribute;
     pub const getUserPointer = zglfw.getWindowUserPointer;
     pub const setUserPointer = zglfw.setWindowUserPointer;
-    pub const setFramebufferCallback = zglfw.setFramebufferCallback;
+    pub const setFramebufferCallback = zglfw.setFramebufferSizeCallback;
     pub const setSizeCallback = zglfw.setWindowSizeCallback;
-    pub const setPosCallback = zglfw.setWindowPosCallback;
-    pub const setFocusCallback = zglfw.setWindowFocusCallback;
-    pub const setIconifyCallback = zglfw.setWindowIconifyCallback;
+    pub const setPosCallback = zglfw.setPosCallback;
+    pub const setFocusCallback = zglfw.setFocusCallback;
+    pub const setIconifyCallback = zglfw.setIconifyCallback;
     pub const setContentScaleCallback = zglfw.setWindowContentScaleCallback;
     pub const setCloseCallback = zglfw.setWindowCloseCallback;
     pub const setKeyCallback = zglfw.setKeyCallback;
@@ -771,7 +774,7 @@ extern fn glfwGetWindowAttrib(window: *Window, attrib: Window.Attribute) c_int;
 pub fn setWindowAttribute(
     window: *Window,
     comptime attrib: Window.Attribute,
-    value: Window.Attribute(attrib),
+    value: Window.Attribute.ValueType(attrib),
 ) void {
     setWindowAttributeUntyped(window, cIntCast(attrib), value);
 }
@@ -858,7 +861,7 @@ extern fn glfwSetWindowMonitor(
 pub const showWindow = glfwShowWindow;
 extern fn glfwShowWindow(*Window) void;
 
-pub const focuswindow = glfwFocusWindow;
+pub const focusWindow = glfwFocusWindow;
 extern fn glfwFocusWindow(*Window) void;
 
 pub const getKey = glfwGetKey;
@@ -900,7 +903,7 @@ pub fn setWindowTitle(window: *Window, title: [:0]const u8) void {
 extern fn glfwSetWindowTitle(*Window, title: [*:0]const u8) void;
 
 pub fn setWindowIcon(window: *Window, images: []const Image) void {
-    glfwSetWindowIcon(window, images.items.len, images.ptr);
+    glfwSetWindowIcon(window, @intCast(images.len), images.ptr);
 }
 extern fn glfwSetWindowIcon(*Window, count: c_int, images: [*]const Image) void;
 

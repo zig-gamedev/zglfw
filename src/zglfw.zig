@@ -679,9 +679,9 @@ pub const Window = opaque {
     pub const setUserPointer = zglfw.setWindowUserPointer;
     pub const setFramebufferCallback = zglfw.setFramebufferSizeCallback;
     pub const setSizeCallback = zglfw.setWindowSizeCallback;
-    pub const setPosCallback = zglfw.setPosCallback;
-    pub const setFocusCallback = zglfw.setFocusCallback;
-    pub const setIconifyCallback = zglfw.setIconifyCallback;
+    pub const setPosCallback = zglfw.setWindowPosCallback;
+    pub const setFocusCallback = zglfw.setWindowFocusCallback;
+    pub const setIconifyCallback = zglfw.setWindowIconifyCallback;
     pub const setContentScaleCallback = zglfw.setWindowContentScaleCallback;
     pub const setCloseCallback = zglfw.setWindowCloseCallback;
     pub const setKeyCallback = zglfw.setKeyCallback;
@@ -799,15 +799,15 @@ pub const setWindowSizeCallback = glfwSetWindowSizeCallback;
 extern fn glfwSetWindowSizeCallback(*Window, ?WindowSizeFn) ?WindowSizeFn;
 pub const WindowSizeFn = *const fn (*Window, width: c_int, height: c_int) callconv(.C) void;
 
-pub const setPosCallback = glfwSetWindowPosCallback;
+pub const setWindowPosCallback = glfwSetWindowPosCallback;
 extern fn glfwSetWindowPosCallback(*Window, ?WindowPosFn) ?WindowPosFn;
 pub const WindowPosFn = *const fn (*Window, x: c_int, y: c_int) callconv(.C) void;
 
-pub const setFocusCallback = glfwSetWindowFocusCallback;
+pub const setWindowFocusCallback = glfwSetWindowFocusCallback;
 extern fn glfwSetWindowFocusCallback(*Window, ?WindowFocusFn) ?WindowFocusFn;
 pub const WindowFocusFn = *const fn (*Window, focused: Bool) callconv(.C) void;
 
-pub const setIconifyCallback = glfwSetWindowIconifyCallback;
+pub const setWindowIconifyCallback = glfwSetWindowIconifyCallback;
 extern fn glfwSetWindowIconifyCallback(*Window, ?IconifyFn) ?IconifyFn;
 pub const IconifyFn = *const fn (*Window, iconified: Bool) callconv(.C) void;
 

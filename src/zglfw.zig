@@ -686,6 +686,11 @@ pub const Window = opaque {
     pub const setCloseCallback = zglfw.setWindowCloseCallback;
     pub const setKeyCallback = zglfw.setKeyCallback;
     pub const setCharCallback = zglfw.setCharCallback;
+    pub const setDropCallback = zglfw.setDropCallback;
+    pub const setMouseButtonCallback = zglfw.setMouseButtonCallback;
+    pub const setScrollCallback = zglfw.setScrollCallback;
+    pub const setCursorPosCallback = zglfw.setCursorPosCallback;
+    pub const setCursorEnterCallback = zglfw.setCursorEnterCallback;
     pub const setMonitor = zglfw.setWindowMonitor;
     pub const show = zglfw.showWindow;
     pub const focus = zglfw.focusWindow;
@@ -696,6 +701,8 @@ pub const Window = opaque {
     pub const setTitle = zglfw.setWindowTitle;
     pub const setIcon = zglfw.setWindowIcon;
     pub const shouldClose = zglfw.windowShouldClose;
+    pub const getClipboardString = zglfw.getClipboardString;
+    pub const setClipboardString = zglfw.setClipboardString;
     pub const setCursor = zglfw.setCursor;
     pub const setInputMode = zglfw.setInputMode;
     pub const setInputModeUntyped = zglfw.setInputModeUntyped;
@@ -828,24 +835,44 @@ extern fn glfwSetCharCallback(*Window, ?CharFn) ?CharFn;
 pub const CharFn = *const fn (*Window, codepoint: u32) callconv(.C) void;
 
 pub const setDropCallback = glfwSetDropCallback;
-extern fn glfwSetDropCallback(*Window, ?DropFn) ?DropFn;
-pub const DropFn = *const fn (*Window, path_count: c_int, paths: [*][*:0]const u8) callconv(.C) void;
+extern fn glfwSetDropCallback(window: *Window, callback: ?DropFn) ?DropFn;
+pub const DropFn = *const fn (
+    window: *Window,
+    path_count: i32,
+    paths: [*][*:0]const u8,
+) callconv(.C) void;
 
 pub const setMouseButtonCallback = glfwSetMouseButtonCallback;
-extern fn glfwSetMouseButtonCallback(*Window, ?MouseButtonFn) ?MouseButtonFn;
-pub const MouseButtonFn = *const fn (*Window, MouseButton, Action, Mods) callconv(.C) void;
+extern fn glfwSetMouseButtonCallback(window: *Window, callback: ?MouseButtonFn) ?MouseButtonFn;
+pub const MouseButtonFn = *const fn (
+    window: *Window,
+    button: MouseButton,
+    action: Action,
+    mods: Mods,
+) callconv(.C) void;
 
 pub const setCursorPosCallback = glfwSetCursorPosCallback;
-extern fn glfwSetCursorPosCallback(*Window, ?CursorPosFn) ?CursorPosFn;
-pub const CursorPosFn = *const fn (*Window, xpos: f64, ypos: f64) callconv(.C) void;
+extern fn glfwSetCursorPosCallback(window: *Window, callback: ?CursorPosFn) ?CursorPosFn;
+pub const CursorPosFn = *const fn (
+    window: *Window,
+    xpos: f64,
+    ypos: f64,
+) callconv(.C) void;
 
 pub const setScrollCallback = glfwSetScrollCallback;
-extern fn glfwSetScrollCallback(*Window, ?ScrollFn) ?ScrollFn;
-pub const ScrollFn = *const fn (*Window, xoffset: f64, yoffset: f64) callconv(.C) void;
+extern fn glfwSetScrollCallback(window: *Window, callback: ?ScrollFn) ?ScrollFn;
+pub const ScrollFn = *const fn (
+    window: *Window,
+    xoffset: f64,
+    yoffset: f64,
+) callconv(.C) void;
 
 pub const setCursorEnterCallback = glfwSetCursorEnterCallback;
-extern fn glfwSetCursorEnterCallback(*Window, ?CursorEnterFn) ?CursorEnterFn;
-pub const CursorEnterFn = *const fn (*Window, entered: Bool) callconv(.C) void;
+extern fn glfwSetCursorEnterCallback(window: *Window, callback: ?CursorEnterFn) ?CursorEnterFn;
+pub const CursorEnterFn = *const fn (
+    window: *Window,
+    entered: i32,
+) callconv(.C) void;
 
 pub const setWindowMonitor = glfwSetWindowMonitor;
 extern fn glfwSetWindowMonitor(
@@ -916,6 +943,19 @@ pub fn setWindowShouldClose(window: *Window, should_close: bool) void {
     return glfwSetWindowShouldClose(window, if (should_close) TRUE else FALSE);
 }
 extern fn glfwSetWindowShouldClose(*Window, should_close: Bool) void;
+
+pub fn getClipboardString(window: *Window) ?[:0]const u8 {
+    return std.mem.span(glfwGetClipboardString(window));
+}
+extern fn glfwGetClipboardString(window: *Window) ?[*:0]const u8;
+
+pub inline fn setClipboardString(window: *Window, string: [:0]const u8) void {
+    return glfwSetClipboardString(window, string);
+}
+extern fn glfwSetClipboardString(
+    window: *Window,
+    string: [*:0]const u8,
+) void;
 
 pub const setCursor = glfwSetCursor;
 extern fn glfwSetCursor(*Window, ?*Cursor) void;

@@ -56,7 +56,7 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(glfw);
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
-    glfw.addIncludePath(b.path("libs/glfw/include"));
+    addIncludePaths(b, glfw, target, options);
     glfw.linkLibC();
 
     const src_dir = "libs/glfw/src/";
@@ -205,14 +205,30 @@ pub fn build(b: *std.Build) void {
         },
         else => {},
     }
+    addIncludePaths(b, module, target, options);
 
-    module.addIncludePath(b.path("libs/glfw/include"));
+    const test_step = b.step("test", "Run zglfw tests");
+    const tests = b.addTest(.{
+        .name = "zglfw-tests",
+        .root_source_file = b.path("src/zglfw.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    addIncludePaths(b, tests, target, options);
+    tests.root_module.addImport("zglfw_options", options_module);
+    tests.linkLibrary(glfw);
+    b.installArtifact(tests);
+    test_step.dependOn(&b.addRunArtifact(tests).step);
+}
+
+fn addIncludePaths(b: *std.Build, unit: anytype, target: anytype, options: anytype) void {
+    unit.addIncludePath(b.path("libs/glfw/include"));
     switch (target.result.os.tag) {
         .linux => {
             if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
-                module.addSystemIncludePath(system_sdk.path("linux/include"));
+                unit.addSystemIncludePath(system_sdk.path("linux/include"));
                 if (options.enable_wayland) {
-                    glfw.addSystemIncludePath(system_sdk.path("linux/include/wayland"));
+                    unit.addSystemIncludePath(system_sdk.path("linux/include/wayland"));
                 }
             }
         },

@@ -57,7 +57,7 @@ pub fn build(b: *std.Build) void {
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
     addIncludePaths(b, glfw, target, options);
-    glfw.linkLibC();
+    linkSystemLibs(b, glfw, target, options);
 
     const src_dir = "libs/glfw/src/";
     switch (target.result.os.tag) {
@@ -200,6 +200,7 @@ pub fn build(b: *std.Build) void {
                     },
                     .flags = &.{},
                 });
+                glfw.addIncludePath(b.path(src_dir ++ "wayland"));
                 glfw.root_module.addCMacro("_GLFW_WAYLAND", "1");
             }
         },
@@ -215,13 +216,14 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     addIncludePaths(b, tests, target, options);
+    linkSystemLibs(b, tests, target, options);
     tests.root_module.addImport("zglfw_options", options_module);
     tests.linkLibrary(glfw);
     b.installArtifact(tests);
     test_step.dependOn(&b.addRunArtifact(tests).step);
 }
 
-fn addIncludePaths(b: *std.Build, unit: anytype, target: anytype, options: anytype) void {
+fn addIncludePaths(b: *std.Build, unit: anytype, target: std.Build.ResolvedTarget, options: anytype) void {
     unit.addIncludePath(b.path("libs/glfw/include"));
     switch (target.result.os.tag) {
         .linux => {
@@ -230,6 +232,51 @@ fn addIncludePaths(b: *std.Build, unit: anytype, target: anytype, options: anyty
                 if (options.enable_wayland) {
                     unit.addSystemIncludePath(system_sdk.path("linux/include/wayland"));
                 }
+            }
+        },
+        else => {},
+    }
+}
+
+fn linkSystemLibs(b: *std.Build, compile_step: *std.Build.Step.Compile, target: std.Build.ResolvedTarget, options: anytype) void {
+    compile_step.linkLibC();
+    switch (target.result.os.tag) {
+        .windows => {
+            compile_step.linkSystemLibrary("gdi32");
+            compile_step.linkSystemLibrary("user32");
+            compile_step.linkSystemLibrary("shell32");
+        },
+        .macos => {
+            if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
+                compile_step.addFrameworkPath(system_sdk.path("macos12/System/Library/Frameworks"));
+                compile_step.addSystemIncludePath(system_sdk.path("macos12/usr/include"));
+                compile_step.addLibraryPath(system_sdk.path("macos12/usr/lib"));
+            }
+            compile_step.linkSystemLibrary("objc");
+            compile_step.linkFramework("IOKit");
+            compile_step.linkFramework("CoreFoundation");
+            compile_step.linkFramework("Metal");
+            compile_step.linkFramework("AppKit");
+            compile_step.linkFramework("CoreServices");
+            compile_step.linkFramework("CoreGraphics");
+            compile_step.linkFramework("Foundation");
+        },
+        .linux => {
+            if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
+                if (target.result.cpu.arch.isX86()) {
+                    compile_step.addLibraryPath(system_sdk.path("linux/lib/x86_64-linux-gnu"));
+                } else {
+                    compile_step.addLibraryPath(system_sdk.path("linux/lib/aarch64-linux-gnu"));
+                }
+                compile_step.addSystemIncludePath(system_sdk.path("linux/include"));
+                compile_step.addSystemIncludePath(system_sdk.path("linux/include/wayland"));
+            }
+            if (options.enable_x11) {
+                compile_step.root_module.addCMacro("_GLFW_X11", "1");
+                compile_step.linkSystemLibrary("X11");
+            }
+            if (options.enable_wayland) {
+                compile_step.root_module.addCMacro("_GLFW_WAYLAND", "1");
             }
         },
         else => {},

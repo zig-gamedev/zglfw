@@ -62,9 +62,6 @@ pub fn build(b: *std.Build) void {
     const src_dir = "libs/glfw/src/";
     switch (target.result.os.tag) {
         .windows => {
-            glfw.linkSystemLibrary("gdi32");
-            glfw.linkSystemLibrary("user32");
-            glfw.linkSystemLibrary("shell32");
             glfw.addCSourceFiles(.{
                 .files = &.{
                     src_dir ++ "platform.c",
@@ -93,19 +90,6 @@ pub fn build(b: *std.Build) void {
             });
         },
         .macos => {
-            if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
-                glfw.addFrameworkPath(system_sdk.path("macos12/System/Library/Frameworks"));
-                glfw.addSystemIncludePath(system_sdk.path("macos12/usr/include"));
-                glfw.addLibraryPath(system_sdk.path("macos12/usr/lib"));
-            }
-            glfw.linkSystemLibrary("objc");
-            glfw.linkFramework("IOKit");
-            glfw.linkFramework("CoreFoundation");
-            glfw.linkFramework("Metal");
-            glfw.linkFramework("AppKit");
-            glfw.linkFramework("CoreServices");
-            glfw.linkFramework("CoreGraphics");
-            glfw.linkFramework("Foundation");
             glfw.addCSourceFiles(.{
                 .files = &.{
                     src_dir ++ "platform.c",
@@ -135,17 +119,6 @@ pub fn build(b: *std.Build) void {
             });
         },
         .linux => {
-            if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
-                glfw.addSystemIncludePath(system_sdk.path("linux/include"));
-                glfw.addSystemIncludePath(system_sdk.path("linux/include/wayland"));
-                glfw.addIncludePath(b.path(src_dir ++ "wayland"));
-
-                if (target.result.cpu.arch.isX86()) {
-                    glfw.addLibraryPath(system_sdk.path("linux/lib/x86_64-linux-gnu"));
-                } else {
-                    glfw.addLibraryPath(system_sdk.path("linux/lib/aarch64-linux-gnu"));
-                }
-            }
             glfw.addCSourceFiles(.{
                 .files = &.{
                     src_dir ++ "platform.c",

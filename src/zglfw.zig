@@ -785,7 +785,7 @@ pub fn setWindowAttribute(
     comptime attrib: Window.Attribute,
     value: Window.Attribute.ValueType(attrib),
 ) void {
-    setWindowAttributeUntyped(window, cIntCast(attrib), value);
+    setWindowAttributeUntyped(window, attrib, cIntCast(value));
 }
 pub const setWindowAttributeUntyped = glfwSetWindowAttrib;
 extern fn glfwSetWindowAttrib(window: *Window, attrib: Window.Attribute, value: c_int) void;

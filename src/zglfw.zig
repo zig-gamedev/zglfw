@@ -151,7 +151,7 @@ extern fn glfwGetError(out_desc: ?*?[*:0]const u8) ErrorCode;
 
 pub const setErrorCallback = glfwSetErrorCallback;
 extern fn glfwSetErrorCallback(?ErrorFn) ?ErrorFn;
-pub const ErrorFn = *const fn (ErrorCode, desc: *?[:0]const u8) callconv(.C) void;
+pub const ErrorFn = *const fn (ErrorCode, desc: ?[*:0]const u8) callconv(.C) void;
 
 pub fn rawMouseMotionSupported() bool {
     return glfwRawMouseMotionSupported() == TRUE;
@@ -697,6 +697,7 @@ pub const Window = opaque {
     pub const getKey = zglfw.getKey;
     pub const getMouseButton = zglfw.getMouseButton;
     pub const setSizeLimits = zglfw.setWindowSizeLimits;
+    pub const setSize = zglfw.setWindowSize;
     pub const setPos = zglfw.setWindowPos;
     pub const setTitle = zglfw.setWindowTitle;
     pub const setIcon = zglfw.setWindowIcon;
@@ -915,7 +916,7 @@ extern fn glfwGetFramebufferSize(*Window, width: ?*c_int, height: ?*c_int) void;
 pub const getWindowSize = glfwGetWindowSize;
 extern fn glfwGetWindowSize(*Window, width: ?*c_int, height: ?*c_int) void;
 
-pub const setSize = glfwSetWindowSize;
+pub const setWindowSize = glfwSetWindowSize;
 extern fn glfwSetWindowSize(*Window, width: c_int, height: c_int) void;
 
 pub const getWindowPos = glfwGetWindowPos;

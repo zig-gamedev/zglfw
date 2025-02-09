@@ -702,6 +702,7 @@ pub const Window = opaque {
     pub const setTitle = zglfw.setWindowTitle;
     pub const setIcon = zglfw.setWindowIcon;
     pub const shouldClose = zglfw.windowShouldClose;
+    pub const setShouldClose = zglfw.setWindowShouldClose;
     pub const getClipboardString = zglfw.getClipboardString;
     pub const setClipboardString = zglfw.setClipboardString;
     pub const setCursor = zglfw.setCursor;

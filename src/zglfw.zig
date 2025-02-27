@@ -114,7 +114,7 @@ pub const Error = error{
     Unknown,
 };
 
-fn convertError(e: ErrorCode) Error!void {
+pub fn convertError(e: ErrorCode) Error!void {
     return switch (e) {
         0 => {},
         0x00010001 => Error.NotInitialized,

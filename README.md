@@ -1,3 +1,4 @@
+contains all the implementations from https://github.com/IridescenceTech/zglfw
 # [zglfw](https://github.com/zig-gamedev/zglfw)
 
 Zig build package and bindings for [GLFW 3.4](https://github.com/glfw/glfw/releases/tag/3.4)

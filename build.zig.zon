@@ -1,5 +1,6 @@
 .{
-    .name = "zglfw",
+    .name = .zglfw,
+    .fingerprint = 0x6fbada33344305ce,
     .version = "0.10.0-dev",
     .paths = .{
         "build.zig",

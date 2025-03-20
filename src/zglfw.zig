@@ -1200,7 +1200,7 @@ fn _isLinuxDesktopLike() bool {
 //
 //--------------------------------------------------------------------------------------------------
 const os = builtin.target.os.tag;
-usingnamespace if (os == .emscripten or os == .freestanding) struct {
+pub const glfwEmscriptenCompat = if (os == .emscripten or os == .freestanding) struct {
     // GLFW - emscripten uses older version that doesn't have these functions - implement dummies
     var glfwGetGamepadStateWarnPrinted: bool = false;
     pub export fn glfwGetGamepadState(_: i32, _: ?*anyopaque) i32 {

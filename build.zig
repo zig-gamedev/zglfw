@@ -137,7 +137,6 @@ pub fn build(b: *std.Build) void {
                     src_dir ++ "posix_time.c",
                     src_dir ++ "posix_thread.c",
                     src_dir ++ "posix_module.c",
-                    src_dir ++ "egl_context.c",
                 },
                 .flags = &.{},
             });

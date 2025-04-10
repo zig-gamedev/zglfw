@@ -691,6 +691,7 @@ pub const Window = opaque {
     pub const setScrollCallback = zglfw.setScrollCallback;
     pub const setCursorPosCallback = zglfw.setCursorPosCallback;
     pub const setCursorEnterCallback = zglfw.setCursorEnterCallback;
+    pub const getMonitor = zglfw.getWindowMonitor;
     pub const setMonitor = zglfw.setWindowMonitor;
     pub const show = zglfw.showWindow;
     pub const focus = zglfw.focusWindow;
@@ -852,6 +853,9 @@ pub const MouseButtonFn = *const fn (
     action: Action,
     mods: Mods,
 ) callconv(.C) void;
+
+pub const getWindowMonitor = glfwGetWindowMonitor;
+extern fn glfwGetWindowMonitor(window: *Window) ?Monitor;
 
 pub const setCursorPosCallback = glfwSetCursorPosCallback;
 extern fn glfwSetCursorPosCallback(window: *Window, callback: ?CursorPosFn) ?CursorPosFn;

@@ -865,7 +865,7 @@ pub const MouseButtonFn = *const fn (
 ) callconv(.C) void;
 
 pub const getWindowMonitor = glfwGetWindowMonitor;
-extern fn glfwGetWindowMonitor(window: *Window) ?Monitor;
+extern fn glfwGetWindowMonitor(window: *Window) ?*Monitor;
 
 pub const setCursorPosCallback = glfwSetCursorPosCallback;
 extern fn glfwSetCursorPosCallback(window: *Window, callback: ?CursorPosFn) ?CursorPosFn;

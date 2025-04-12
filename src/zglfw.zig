@@ -545,6 +545,7 @@ pub const Monitor = opaque {
     pub const getName = zglfw.getMonitorName;
     pub const getVideoMode = zglfw.getVideoMode;
     pub const getVideoModes = zglfw.getVideoModes;
+    pub const getPhysicalSize = zglfw.getMonitorPhysicalSize;
 
     pub fn getPos(self: *Monitor) [2]c_int {
         var xpos: c_int = 0;
@@ -565,6 +566,15 @@ pub fn getMonitors() []*Monitor {
     return @as([*]*Monitor, undefined)[0..0];
 }
 extern fn glfwGetMonitors(count: *c_int) ?[*]*Monitor;
+
+pub fn getMonitorPhysicalSize(monitor: *Monitor) Error![2]i32 {
+    var width_mm: c_int = undefined;
+    var height_mm: c_int = undefined;
+    glfwGetMonitorPhysicalSize(monitor, &width_mm, &height_mm);
+    try maybeError();
+    return .{ width_mm, height_mm };
+}
+extern fn glfwGetMonitorPhysicalSize(*Monitor, width_mm: ?*c_int, height_mm: ?*c_int) void;
 
 pub const getMonitorPos = glfwGetMonitorPos;
 extern fn glfwGetMonitorPos(*Monitor, xpos: ?*c_int, ypos: ?*c_int) void;
@@ -691,6 +701,7 @@ pub const Window = opaque {
     pub const setScrollCallback = zglfw.setScrollCallback;
     pub const setCursorPosCallback = zglfw.setCursorPosCallback;
     pub const setCursorEnterCallback = zglfw.setCursorEnterCallback;
+    pub const getMonitor = zglfw.getWindowMonitor;
     pub const setMonitor = zglfw.setWindowMonitor;
     pub const show = zglfw.showWindow;
     pub const focus = zglfw.focusWindow;
@@ -852,6 +863,9 @@ pub const MouseButtonFn = *const fn (
     action: Action,
     mods: Mods,
 ) callconv(.C) void;
+
+pub const getWindowMonitor = glfwGetWindowMonitor;
+extern fn glfwGetWindowMonitor(window: *Window) ?*Monitor;
 
 pub const setCursorPosCallback = glfwSetCursorPosCallback;
 extern fn glfwSetCursorPosCallback(window: *Window, callback: ?CursorPosFn) ?CursorPosFn;

@@ -169,10 +169,10 @@ extern fn glfwSwapInterval(interval: c_int) void;
 
 pub const GlProc = *const anyopaque;
 
-pub fn getProcAddress(procname: [*:0]const u8) ?GlProc {
+pub fn getProcAddress(procname: [*:0]const u8) callconv(.c) ?GlProc {
     return glfwGetProcAddress(procname);
 }
-extern fn glfwGetProcAddress(procname: [*:0]const u8) ?GlProc;
+extern fn glfwGetProcAddress(procname: [*:0]const u8) callconv(.c) ?GlProc;
 
 //--------------------------------------------------------------------------------------------------
 //
@@ -804,7 +804,7 @@ extern fn glfwSetWindowAttrib(window: *Window, attrib: Window.Attribute, value: 
 pub fn getWindowUserPointer(window: *Window, comptime T: type) ?*T {
     return @ptrCast(@alignCast(glfwGetWindowUserPointer(window)));
 }
-extern fn glfwGetWindowUserPointer(window: *Window) ?*anyopaque;
+extern fn glfwGetWindowUserPointer(window: *Window) callconv(.c) ?*anyopaque;
 
 pub fn setWindowUserPointer(window: *Window, pointer: ?*anyopaque) void {
     glfwSetWindowUserPointer(window, pointer);
@@ -1168,8 +1168,8 @@ fn _getX11Adapter(_: *Monitor) u32 {
 }
 
 pub const getX11Display = if (_isLinuxDesktopLike() and options.enable_x11) glfwGetX11Display else _getX11Display;
-extern fn glfwGetX11Display() ?*anyopaque;
-fn _getX11Display() ?*anyopaque {
+extern fn glfwGetX11Display() callconv(.c) ?*anyopaque;
+fn _getX11Display() callconv(.c) ?*anyopaque {
     return null;
 }
 
@@ -1180,20 +1180,20 @@ fn _getX11Window(_: *Window) u32 {
 }
 
 pub const getWaylandDisplay = if (_isLinuxDesktopLike() and options.enable_wayland) glfwGetWaylandDisplay else _getWaylandDisplay;
-extern fn glfwGetWaylandDisplay() ?*anyopaque;
-fn _getWaylandDisplay() ?*anyopaque {
+extern fn glfwGetWaylandDisplay() callconv(.c) ?*anyopaque;
+fn _getWaylandDisplay() callconv(.c) ?*anyopaque {
     return null;
 }
 
 pub const getWaylandWindow = if (_isLinuxDesktopLike() and options.enable_wayland) glfwGetWaylandWindow else _getWaylandWindow;
-extern fn glfwGetWaylandWindow(window: *Window) ?*anyopaque;
-fn _getWaylandWindow(_: *Window) ?*anyopaque {
+extern fn glfwGetWaylandWindow(window: *Window) callconv(.c) ?*anyopaque;
+fn _getWaylandWindow(_: *Window) callconv(.c) ?*anyopaque {
     return null;
 }
 
 pub const getCocoaWindow = if (builtin.target.os.tag == .macos) glfwGetCocoaWindow else _getCocoaWindow;
-extern fn glfwGetCocoaWindow(window: *Window) ?*anyopaque;
-fn _getCocoaWindow(_: *Window) ?*anyopaque {
+extern fn glfwGetCocoaWindow(window: *Window) callconv(.c) ?*anyopaque;
+fn _getCocoaWindow(_: *Window) callconv(.c) ?*anyopaque {
     return null;
 }
 

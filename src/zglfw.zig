@@ -717,6 +717,7 @@ pub const Window = opaque {
     pub const getClipboardString = zglfw.getClipboardString;
     pub const setClipboardString = zglfw.setClipboardString;
     pub const setCursor = zglfw.setCursor;
+    pub const getInputMode = zglfw.getInputMode;
     pub const setInputMode = zglfw.setInputMode;
     pub const setInputModeUntyped = zglfw.setInputModeUntyped;
     pub const swapBuffers = zglfw.swapBuffers;
@@ -990,6 +991,19 @@ pub const InputMode = enum(c_int) {
         };
     }
 };
+pub fn getInputMode(
+    window: *Window,
+    comptime mode: InputMode,
+) Error!InputMode.ValueType(mode) {
+    return @enumFromInt(try getInputModeUntyped(window, mode));
+}
+pub fn getInputModeUntyped(window: *Window, mode: InputMode) Error!c_int {
+    const value = glfwGetInputMode(window, mode);
+    try maybeError();
+    return value;
+}
+extern fn glfwGetInputMode(*Window, InputMode) c_int;
+
 pub fn setInputMode(
     window: *Window,
     comptime mode: InputMode,

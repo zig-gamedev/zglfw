@@ -2,6 +2,7 @@
     .name = .zglfw,
     .fingerprint = 0x6fbada33344305ce, // Changing this has security and trust implications.
     .version = "0.10.0-dev",
+    .minimum_zig_version = "0.14.0",
     .paths = .{
         "build.zig",
         "build.zig.zon",

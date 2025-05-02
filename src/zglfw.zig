@@ -1173,7 +1173,12 @@ fn _getX11Display() callconv(.c) ?*anyopaque {
     return null;
 }
 
-pub const getX11Window = if (_isLinuxDesktopLike() and options.enable_x11) glfwGetX11Window else _getX11Window;
+pub fn getX11Window(window: *Window) u32 {
+    if (comptime _isLinuxDesktopLike() and options.enable_x11) {
+        return glfwGetX11Window(window);
+    }
+    return _getX11Window(window);
+}
 extern fn glfwGetX11Window(window: *Window) u32;
 fn _getX11Window(_: *Window) u32 {
     return 0;

@@ -1150,19 +1150,19 @@ pub const ContextCreationApi = enum(c_int) {
 //
 //--------------------------------------------------------------------------------------------------
 pub const getWin32Adapter = if (builtin.target.os.tag == .windows) glfwGetWin32Adapter else _getWin32Adapter;
-extern fn glfwGetWin32Adapter(*Monitor) ?[*:0]const u8;
+extern fn glfwGetWin32Adapter(*Monitor) callconv(.c) ?[*:0]const u8;
 fn _getWin32Adapter(_: *Monitor) ?[*:0]const u8 {
     return null;
 }
 
 pub const getWin32Window = if (builtin.target.os.tag == .windows) glfwGetWin32Window else _getWin32Window;
-extern fn glfwGetWin32Window(*Window) ?std.os.windows.HWND;
+extern fn glfwGetWin32Window(*Window) callconv(.c) ?std.os.windows.HWND;
 fn _getWin32Window(_: *Window) ?std.os.windows.HWND {
     return null;
 }
 
 pub const getX11Adapter = if (_isLinuxDesktopLike() and options.enable_x11) glfwGetX11Adapter else _getX11Adapter;
-extern fn glfwGetX11Adapter(*Monitor) u32;
+extern fn glfwGetX11Adapter(*Monitor) callconv(.c) u32;
 fn _getX11Adapter(_: *Monitor) u32 {
     return 0;
 }
@@ -1174,7 +1174,7 @@ fn _getX11Display() callconv(.c) ?*anyopaque {
 }
 
 pub const getX11Window = if (_isLinuxDesktopLike() and options.enable_x11) glfwGetX11Window else _getX11Window;
-extern fn glfwGetX11Window(window: *Window) u32;
+extern fn glfwGetX11Window(window: *Window) callconv(.c) u32;
 fn _getX11Window(_: *Window) u32 {
     return 0;
 }

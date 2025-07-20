@@ -38,21 +38,19 @@ pub fn build(b: *std.Build) void {
 
     if (target.result.os.tag == .emscripten) return;
 
-    const glfw = if (options.shared) blk: {
-        const lib = b.addSharedLibrary(.{
-            .name = "glfw",
+    const glfw = b.addLibrary(.{
+        .name = "glfw",
+        .linkage = if (options.shared) .dynamic else .static,
+        .root_module = b.createModule(.{
             .target = target,
             .optimize = optimize,
-        });
-        if (target.result.os.tag == .windows) {
-            lib.root_module.addCMacro("_GLFW_BUILD_DLL", "");
-        }
-        break :blk lib;
-    } else b.addStaticLibrary(.{
-        .name = "glfw",
-        .target = target,
-        .optimize = optimize,
+        }),
     });
+
+    if (options.shared and target.result.os.tag == .windows) {
+        glfw.root_module.addCMacro("_GLFW_BUILD_DLL", "");
+    }
+
     b.installArtifact(glfw);
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
@@ -183,9 +181,11 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run zglfw tests");
     const tests = b.addTest(.{
         .name = "zglfw-tests",
-        .root_source_file = b.path("src/zglfw.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/zglfw.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
     });
     addIncludePaths(b, tests, target, options);
     linkSystemLibs(b, tests, target, options);

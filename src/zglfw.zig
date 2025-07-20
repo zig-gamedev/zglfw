@@ -151,7 +151,7 @@ extern fn glfwGetError(out_desc: ?*?[*:0]const u8) ErrorCode;
 
 pub const setErrorCallback = glfwSetErrorCallback;
 extern fn glfwSetErrorCallback(?ErrorFn) ?ErrorFn;
-pub const ErrorFn = *const fn (ErrorCode, desc: ?[*:0]const u8) callconv(.C) void;
+pub const ErrorFn = *const fn (ErrorCode, desc: ?[*:0]const u8) callconv(.c) void;
 
 pub fn rawMouseMotionSupported() bool {
     return glfwRawMouseMotionSupported() == TRUE;
@@ -814,39 +814,39 @@ extern fn glfwSetWindowUserPointer(window: *Window, pointer: ?*anyopaque) void;
 
 pub const setFramebufferSizeCallback = glfwSetFramebufferSizeCallback;
 extern fn glfwSetFramebufferSizeCallback(*Window, ?FramebufferSizeFn) ?FramebufferSizeFn;
-pub const FramebufferSizeFn = *const fn (*Window, width: c_int, height: c_int) callconv(.C) void;
+pub const FramebufferSizeFn = *const fn (*Window, width: c_int, height: c_int) callconv(.c) void;
 
 pub const setWindowSizeCallback = glfwSetWindowSizeCallback;
 extern fn glfwSetWindowSizeCallback(*Window, ?WindowSizeFn) ?WindowSizeFn;
-pub const WindowSizeFn = *const fn (*Window, width: c_int, height: c_int) callconv(.C) void;
+pub const WindowSizeFn = *const fn (*Window, width: c_int, height: c_int) callconv(.c) void;
 
 pub const setWindowPosCallback = glfwSetWindowPosCallback;
 extern fn glfwSetWindowPosCallback(*Window, ?WindowPosFn) ?WindowPosFn;
-pub const WindowPosFn = *const fn (*Window, x: c_int, y: c_int) callconv(.C) void;
+pub const WindowPosFn = *const fn (*Window, x: c_int, y: c_int) callconv(.c) void;
 
 pub const setWindowFocusCallback = glfwSetWindowFocusCallback;
 extern fn glfwSetWindowFocusCallback(*Window, ?WindowFocusFn) ?WindowFocusFn;
-pub const WindowFocusFn = *const fn (*Window, focused: Bool) callconv(.C) void;
+pub const WindowFocusFn = *const fn (*Window, focused: Bool) callconv(.c) void;
 
 pub const setWindowIconifyCallback = glfwSetWindowIconifyCallback;
 extern fn glfwSetWindowIconifyCallback(*Window, ?IconifyFn) ?IconifyFn;
-pub const IconifyFn = *const fn (*Window, iconified: Bool) callconv(.C) void;
+pub const IconifyFn = *const fn (*Window, iconified: Bool) callconv(.c) void;
 
 pub const setWindowContentScaleCallback = glfwSetWindowContentScaleCallback;
 extern fn glfwSetWindowContentScaleCallback(*Window, ?WindowContentScaleFn) ?WindowContentScaleFn;
-pub const WindowContentScaleFn = *const fn (*Window, xscale: f32, yscale: f32) callconv(.C) void;
+pub const WindowContentScaleFn = *const fn (*Window, xscale: f32, yscale: f32) callconv(.c) void;
 
 pub const setWindowCloseCallback = glfwSetWindowCloseCallback;
 extern fn glfwSetWindowCloseCallback(*Window, ?WindowCloseFn) ?WindowCloseFn;
-pub const WindowCloseFn = *const fn (*Window) callconv(.C) void;
+pub const WindowCloseFn = *const fn (*Window) callconv(.c) void;
 
 pub const setKeyCallback = glfwSetKeyCallback;
 extern fn glfwSetKeyCallback(*Window, ?KeyFn) ?KeyFn;
-pub const KeyFn = *const fn (*Window, Key, scancode: c_int, Action, Mods) callconv(.C) void;
+pub const KeyFn = *const fn (*Window, Key, scancode: c_int, Action, Mods) callconv(.c) void;
 
 pub const setCharCallback = glfwSetCharCallback;
 extern fn glfwSetCharCallback(*Window, ?CharFn) ?CharFn;
-pub const CharFn = *const fn (*Window, codepoint: u32) callconv(.C) void;
+pub const CharFn = *const fn (*Window, codepoint: u32) callconv(.c) void;
 
 pub const setDropCallback = glfwSetDropCallback;
 extern fn glfwSetDropCallback(window: *Window, callback: ?DropFn) ?DropFn;
@@ -854,7 +854,7 @@ pub const DropFn = *const fn (
     window: *Window,
     path_count: i32,
     paths: [*][*:0]const u8,
-) callconv(.C) void;
+) callconv(.c) void;
 
 pub const setMouseButtonCallback = glfwSetMouseButtonCallback;
 extern fn glfwSetMouseButtonCallback(window: *Window, callback: ?MouseButtonFn) ?MouseButtonFn;
@@ -863,7 +863,7 @@ pub const MouseButtonFn = *const fn (
     button: MouseButton,
     action: Action,
     mods: Mods,
-) callconv(.C) void;
+) callconv(.c) void;
 
 pub const getWindowMonitor = glfwGetWindowMonitor;
 extern fn glfwGetWindowMonitor(window: *Window) ?*Monitor;
@@ -874,7 +874,7 @@ pub const CursorPosFn = *const fn (
     window: *Window,
     xpos: f64,
     ypos: f64,
-) callconv(.C) void;
+) callconv(.c) void;
 
 pub const setScrollCallback = glfwSetScrollCallback;
 extern fn glfwSetScrollCallback(window: *Window, callback: ?ScrollFn) ?ScrollFn;
@@ -882,14 +882,14 @@ pub const ScrollFn = *const fn (
     window: *Window,
     xoffset: f64,
     yoffset: f64,
-) callconv(.C) void;
+) callconv(.c) void;
 
 pub const setCursorEnterCallback = glfwSetCursorEnterCallback;
 extern fn glfwSetCursorEnterCallback(window: *Window, callback: ?CursorEnterFn) ?CursorEnterFn;
 pub const CursorEnterFn = *const fn (
     window: *Window,
     entered: i32,
-) callconv(.C) void;
+) callconv(.c) void;
 
 pub const setWindowMonitor = glfwSetWindowMonitor;
 extern fn glfwSetWindowMonitor(
@@ -1227,20 +1227,27 @@ fn _isLinuxDesktopLike() bool {
 // Emscripten
 //
 //--------------------------------------------------------------------------------------------------
-const os = builtin.target.os.tag;
-usingnamespace if (os == .emscripten or os == .freestanding) struct {
-    // GLFW - emscripten uses older version that doesn't have these functions - implement dummies
-    var glfwGetGamepadStateWarnPrinted: bool = false;
-    pub export fn glfwGetGamepadState(_: i32, _: ?*anyopaque) i32 {
-        if (!glfwGetGamepadStateWarnPrinted) {
-            std.log.err("glfwGetGamepadState(): not implemented! Use emscripten specific functions: https://emscripten.org/docs/api_reference/html5.h.html?highlight=gamepadstate#c.emscripten_get_gamepad_status", .{});
-            glfwGetGamepadStateWarnPrinted = true;
+comptime {
+    const os = builtin.target.os.tag;
+    const emscripten = struct {
+        // GLFW - emscripten uses older version that doesn't have these functions - implement dummies
+        var glfwGetGamepadStateWarnPrinted: bool = false;
+        fn glfwGetGamepadState(_: i32, _: ?*anyopaque) callconv(.c) i32 {
+            if (!glfwGetGamepadStateWarnPrinted) {
+                std.log.err("glfwGetGamepadState(): not implemented! Use emscripten specific functions: https://emscripten.org/docs/api_reference/html5.h.html?highlight=gamepadstate#c.emscripten_get_gamepad_status", .{});
+                glfwGetGamepadStateWarnPrinted = true;
+            }
+            return 0; // false - failure
         }
-        return 0; // false - failure
-    }
 
-    /// use glfwSetCallback instead
-    pub export fn glfwGetError() i32 {
-        return 0; // no error
+        /// use glfwSetCallback instead
+        fn glfwGetError() callconv(.c) i32 {
+            return 0; // no error
+        }
+    };
+
+    if (os == .emscripten or os == .freestanding) {
+        @export(&emscripten.glfwGetGamepadState, .{ .name = "glfwGetGamepadState" });
+        @export(&emscripten.glfwGetError, .{ .name = "glfwGetError" });
     }
-} else struct {};
+}

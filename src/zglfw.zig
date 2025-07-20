@@ -174,6 +174,25 @@ pub fn getProcAddress(procname: [*:0]const u8) callconv(.c) ?GlProc {
 }
 extern fn glfwGetProcAddress(procname: [*:0]const u8) callconv(.c) ?GlProc;
 
+pub const Platform = enum(c_int) {
+    win32 = 0x00060001,
+    cocoa = 0x00060002,
+    wayland = 0x00060003,
+    x11 = 0x00060004,
+    null = 0x00060005,
+    _,
+};
+
+pub fn getPlatform() Platform {
+    return glfwGetPlatform();
+}
+extern fn glfwGetPlatform() Platform;
+
+pub fn platformSupported(platform: Platform) bool {
+    return glfwPlatformSupported(platform) == TRUE;
+}
+extern fn glfwPlatformSupported(Platform) Bool;
+
 //--------------------------------------------------------------------------------------------------
 //
 // Keyboard/Mouse

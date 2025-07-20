@@ -1241,6 +1241,8 @@ comptime {
         }
 
         /// use glfwSetCallback instead
+        /// This is a stub implementation for Emscripten compatibility.
+        /// It always returns 0 to indicate no error, as Emscripten does not support this functionality.
         fn glfwGetError() callconv(.c) i32 {
             return 0; // no error
         }

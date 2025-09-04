@@ -669,7 +669,6 @@ pub const Image = extern struct {
 //--------------------------------------------------------------------------------------------------
 
 /// FIXME: missing bindings
-/// glfwSetWindowOpacity
 /// glfwIconifyWindow
 /// glfwRestoreWindow
 /// glfwMaximizeWindow
@@ -740,6 +739,7 @@ pub const Window = opaque {
     pub const setSizeLimits = zglfw.setWindowSizeLimits;
     pub const setAspectRatio = zglfw.setWindowAspectRatio;
     pub const getOpacity = zglfw.getWindowOpacity;
+    pub const setOpacity = zglfw.setWindowOpacity;
     pub const setSize = zglfw.setWindowSize;
     pub const setPos = zglfw.setWindowPos;
     pub const setTitle = zglfw.setWindowTitle;
@@ -975,6 +975,9 @@ extern fn glfwGetWindowFrameSize(*Window, left: ?*c_int, top: ?*c_int, right: ?*
 
 pub const getWindowOpacity = glfwGetWindowOpacity;
 extern fn glfwGetWindowOpacity(*Window) f32;
+
+pub const setWindowOpacity = glfwSetWindowOpacity;
+extern fn glfwSetWindowOpacity(*Window, opacity: f32) void;
 
 pub const getFramebufferSize = glfwGetFramebufferSize;
 extern fn glfwGetFramebufferSize(*Window, width: ?*c_int, height: ?*c_int) void;

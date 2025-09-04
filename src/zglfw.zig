@@ -71,8 +71,9 @@ extern fn glfwWaitEvents() void;
 pub const waitEventsTimeout = glfwWaitEventsTimeout;
 extern fn glfwWaitEventsTimeout(timeout: f64) void;
 
-// FIXME: missing binding
-// glfwPostEmptyEvent
+/// `pub fn postEmptyEvent() void`
+pub const postEmptyEvent = glfwPostEmptyEvent;
+extern fn glfwPostEmptyEvent() void;
 
 pub fn isVulkanSupported() bool {
     return glfwVulkanSupported() == TRUE;

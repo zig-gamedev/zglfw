@@ -768,31 +768,31 @@ pub const Window = opaque {
     }
 
     pub fn getFrameSize(self: *Window) [4]c_int {
-        var left: c_int = 0.0;
-        var top: c_int = 0.0;
-        var right: c_int = 0.0;
-        var bottom: c_int = 0.0;
+        var left: c_int = 0;
+        var top: c_int = 0;
+        var right: c_int = 0;
+        var bottom: c_int = 0;
         zglfw.getWindowFrameSize(self, &left, &top, &right, &bottom);
         return .{ left, top, right, bottom };
     }
 
     pub fn getFramebufferSize(self: *Window) [2]c_int {
-        var width: c_int = 0.0;
-        var height: c_int = 0.0;
+        var width: c_int = 0;
+        var height: c_int = 0;
         zglfw.getFramebufferSize(self, &width, &height);
         return .{ width, height };
     }
 
     pub fn getSize(self: *Window) [2]c_int {
-        var width: c_int = 0.0;
-        var heght: c_int = 0.0;
+        var width: c_int = 0;
+        var heght: c_int = 0;
         zglfw.getWindowSize(self, &width, &heght);
         return .{ width, heght };
     }
 
     pub fn getPos(self: *Window) [2]c_int {
-        var xpos: c_int = 0.0;
-        var ypos: c_int = 0.0;
+        var xpos: c_int = 0;
+        var ypos: c_int = 0;
         zglfw.getWindowPos(self, &xpos, &ypos);
         return .{ xpos, ypos };
     }

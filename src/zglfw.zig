@@ -739,6 +739,7 @@ pub const Window = opaque {
     pub const getMouseButton = zglfw.getMouseButton;
     pub const setSizeLimits = zglfw.setWindowSizeLimits;
     pub const setAspectRatio = zglfw.setWindowAspectRatio;
+    pub const getOpacity = zglfw.getWindowOpacity;
     pub const setSize = zglfw.setWindowSize;
     pub const setPos = zglfw.setWindowPos;
     pub const setTitle = zglfw.setWindowTitle;
@@ -971,6 +972,9 @@ extern fn glfwGetWindowContentScale(*Window, xscale: ?*f32, yscale: ?*f32) void;
 
 pub const getWindowFrameSize = glfwGetWindowFrameSize;
 extern fn glfwGetWindowFrameSize(*Window, left: ?*c_int, top: ?*c_int, right: ?*c_int, bottom: ?*c_int) void;
+
+pub const getWindowOpacity = glfwGetWindowOpacity;
+extern fn glfwGetWindowOpacity(*Window) f32;
 
 pub const getFramebufferSize = glfwGetFramebufferSize;
 extern fn glfwGetFramebufferSize(*Window, width: ?*c_int, height: ?*c_int) void;

@@ -669,7 +669,6 @@ pub const Image = extern struct {
 //--------------------------------------------------------------------------------------------------
 
 /// FIXME: missing bindings
-/// glfwGetWindowFrameSize
 /// glfwSetWindowOpacity
 /// glfwIconifyWindow
 /// glfwRestoreWindow
@@ -766,6 +765,15 @@ pub const Window = opaque {
         var yscale: f32 = 0.0;
         zglfw.getWindowContentScale(self, &xscale, &yscale);
         return .{ xscale, yscale };
+    }
+
+    pub fn getFrameSize(self: *Window) [4]c_int {
+        var left: c_int = 0.0;
+        var top: c_int = 0.0;
+        var right: c_int = 0.0;
+        var bottom: c_int = 0.0;
+        zglfw.getWindowFrameSize(self, &left, &top, &right, &bottom);
+        return .{ left, top, right, bottom };
     }
 
     pub fn getFramebufferSize(self: *Window) [2]c_int {
@@ -960,6 +968,9 @@ extern fn glfwSetWindowAspectRatio(*Window, numer: c_int, denom: c_int) void;
 
 pub const getWindowContentScale = glfwGetWindowContentScale;
 extern fn glfwGetWindowContentScale(*Window, xscale: ?*f32, yscale: ?*f32) void;
+
+pub const getWindowFrameSize = glfwGetWindowFrameSize;
+extern fn glfwGetWindowFrameSize(*Window, left: ?*c_int, top: ?*c_int, right: ?*c_int, bottom: ?*c_int) void;
 
 pub const getFramebufferSize = glfwGetFramebufferSize;
 extern fn glfwGetFramebufferSize(*Window, width: ?*c_int, height: ?*c_int) void;

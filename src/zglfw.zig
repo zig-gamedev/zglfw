@@ -669,7 +669,6 @@ pub const Image = extern struct {
 //--------------------------------------------------------------------------------------------------
 
 /// FIXME: missing bindings
-/// glfwIconifyWindow
 /// glfwRestoreWindow
 /// glfwMaximizeWindow
 /// glfwHideWindow
@@ -732,6 +731,7 @@ pub const Window = opaque {
     pub const setCursorEnterCallback = zglfw.setCursorEnterCallback;
     pub const getMonitor = zglfw.getWindowMonitor;
     pub const setMonitor = zglfw.setWindowMonitor;
+    pub const iconify = zglfw.iconifyWindow;
     pub const show = zglfw.showWindow;
     pub const focus = zglfw.focusWindow;
     pub const getKey = zglfw.getKey;
@@ -942,6 +942,9 @@ extern fn glfwSetWindowMonitor(
     height: c_int,
     refreshRate: c_int,
 ) void;
+
+pub const iconifyWindow = glfwIconifyWindow;
+extern fn glfwIconifyWindow(*Window) void;
 
 pub const showWindow = glfwShowWindow;
 extern fn glfwShowWindow(*Window) void;

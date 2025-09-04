@@ -71,6 +71,9 @@ extern fn glfwWaitEvents() void;
 pub const waitEventsTimeout = glfwWaitEventsTimeout;
 extern fn glfwWaitEventsTimeout(timeout: f64) void;
 
+// FIXME: missing binding
+// glfwPostEmptyEvent
+
 pub fn isVulkanSupported() bool {
     return glfwVulkanSupported() == TRUE;
 }
@@ -664,6 +667,15 @@ pub const Image = extern struct {
 // Window
 //
 //--------------------------------------------------------------------------------------------------
+
+/// FIXME: missing bindings
+/// glfwGetWindowFrameSize
+/// glfwSetWindowOpacity
+/// glfwIconifyWindow
+/// glfwRestoreWindow
+/// glfwMaximizeWindow
+/// glfwHideWindow
+/// glfwRequestWindowAttention
 pub const Window = opaque {
     pub const Attribute = enum(c_int) {
         focused = 0x00020001,
@@ -727,6 +739,7 @@ pub const Window = opaque {
     pub const getKey = zglfw.getKey;
     pub const getMouseButton = zglfw.getMouseButton;
     pub const setSizeLimits = zglfw.setWindowSizeLimits;
+    pub const setAspectRatio = zglfw.setWindowAspectRatio;
     pub const setSize = zglfw.setWindowSize;
     pub const setPos = zglfw.setWindowPos;
     pub const setTitle = zglfw.setWindowTitle;
@@ -941,6 +954,9 @@ extern fn glfwSetCursorPos(*Window, xpos: f64, ypos: f64) void;
 
 pub const setWindowSizeLimits = glfwSetWindowSizeLimits;
 extern fn glfwSetWindowSizeLimits(*Window, min_w: c_int, min_h: c_int, max_w: c_int, max_h: c_int) void;
+
+pub const setWindowAspectRatio = glfwSetWindowAspectRatio;
+extern fn glfwSetWindowAspectRatio(*Window, numer: c_int, denom: c_int) void;
 
 pub const getWindowContentScale = glfwGetWindowContentScale;
 extern fn glfwGetWindowContentScale(*Window, xscale: ?*f32, yscale: ?*f32) void;

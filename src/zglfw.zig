@@ -91,23 +91,23 @@ pub fn getRequiredInstanceExtensions() Error![][*:0]const u8 {
 extern fn glfwGetRequiredInstanceExtensions(count: *u32) ?*?[*:0]const u8;
 
 pub const VulkanFn = *const fn () callconv(.c) void;
-pub const VkInstance = ?*const anyopaque;
-pub const VkPhysicalDevice = ?*const anyopaque;
-pub const VkAllocationCallbacks = anyopaque;
-pub const VkSurfaceKHR = anyopaque;
 
-pub fn getInstanceProcAddress(instance: VkInstance, procname: [*:0]const u8) Error!VulkanFn {
-    if (glfwGetInstanceProcAddress(instance, procname)) |address| {
-        return address;
-    }
-    try maybeError();
-    return error.APIUnavailable;
-}
-extern fn glfwGetInstanceProcAddress(instance: VkInstance, procname: [*:0]const u8) ?VulkanFn;
+const vk = if (options.enable_vulkan_import)
+    @import("vulkan")
+else
+    struct {
+        pub const Instance = ?*const anyopaque;
+        pub const PhysicalDevice = ?*const anyopaque;
+        pub const AllocationCallbacks = anyopaque;
+        pub const SurfaceKHR = anyopaque;
+    };
+
+pub const getInstanceProcAddress = glfwGetInstanceProcAddress;
+extern fn glfwGetInstanceProcAddress(instance: vk.Instance, procname: [*:0]const u8) ?VulkanFn;
 
 pub fn getPhysicalDevicePresentationSupport(
-    instance: VkInstance,
-    device: VkPhysicalDevice,
+    instance: vk.Instance,
+    device: vk.PhysicalDevice,
     queuefamily: u32,
 ) Error!bool {
     const result = glfwGetPhysicalDevicePresentationSupport(instance, device, queuefamily) == TRUE;
@@ -115,16 +115,16 @@ pub fn getPhysicalDevicePresentationSupport(
     return result;
 }
 extern fn glfwGetPhysicalDevicePresentationSupport(
-    instance: VkInstance,
-    device: VkPhysicalDevice,
+    instance: vk.Instance,
+    device: vk.PhysicalDevice,
     queuefamily: u32,
 ) Bool;
 
 pub fn createWindowSurface(
-    instance: VkInstance,
+    instance: vk.Instance,
     window: *Window,
-    allocator: ?*const VkAllocationCallbacks,
-    surface: *VkSurfaceKHR,
+    allocator: ?*const vk.AllocationCallbacks,
+    surface: *vk.SurfaceKHR,
 ) Error!void {
     if (glfwCreateWindowSurface(instance, window, allocator, surface) == 0) {
         return;
@@ -133,10 +133,10 @@ pub fn createWindowSurface(
     return Error.APIUnavailable;
 }
 extern fn glfwCreateWindowSurface(
-    instance: VkInstance,
+    instance: vk.Instance,
     window: *Window,
-    allocator: ?*const VkAllocationCallbacks,
-    surface: *VkSurfaceKHR,
+    allocator: ?*const vk.AllocationCallbacks,
+    surface: *vk.SurfaceKHR,
 ) c_int;
 
 /// `pub fn getTime() f64`

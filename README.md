@@ -60,7 +60,6 @@ const vulkan = b.dependency("vulkan_zig", .{
     .registry = vulkan_headers.path("registry/vk.xml"),
 }).module("vulkan-zig");
 
-
 const zglfw = b.dependency("zglfw", .{ .import_vulkan = true });
 
 const zglfw_mod = zglfw.module("root");
@@ -79,7 +78,5 @@ const exe = b.addExecutable(.{
     }),
 });
 
-exe.root_module.addImport("vulkan", vulkan);
 exe.root_module.linkLibrary(zglfw.artifact("glfw"));
-
 ```

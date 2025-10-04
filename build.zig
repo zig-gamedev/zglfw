@@ -20,6 +20,11 @@ pub fn build(b: *std.Build) void {
             "wayland",
             "Whether to build with Wayland support (default: true)",
         ) orelse true,
+        .enable_vulkan_import = b.option(
+            bool,
+            "import_vulkan",
+            "Whether to build with external Vulkan dependency (default: false)",
+        ) orelse false,
     };
 
     const options_step = b.addOptions();

@@ -625,6 +625,11 @@ pub const Monitor = opaque {
         getMonitorPos(self, &xpos, &ypos);
         return .{ xpos, ypos };
     }
+
+    pub const Event = enum(c_int) {
+        connected = 0x00040001,
+        disconnected = 0x00040002,
+    };
 };
 
 pub const getPrimaryMonitor = glfwGetPrimaryMonitor;
@@ -659,6 +664,10 @@ pub fn getMonitorName(monitor: *Monitor) Error![]const u8 {
     return "";
 }
 extern fn glfwGetMonitorName(monitor: *Monitor) ?[*:0]const u8;
+
+pub const MonitorFn = *const fn (monitor: *Monitor, event: Monitor.Event) callconv(.c) void;
+pub const setMonitorCallback = glfwSetMonitorCallback;
+extern fn glfwSetMonitorCallback(callback: ?MonitorFn) ?MonitorFn;
 
 pub fn getVideoMode(monitor: *Monitor) Error!*VideoMode {
     if (glfwGetVideoMode(monitor)) |video_mode| {

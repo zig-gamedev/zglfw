@@ -665,7 +665,7 @@ pub fn getMonitorName(monitor: *Monitor) Error![]const u8 {
 }
 extern fn glfwGetMonitorName(monitor: *Monitor) ?[*:0]const u8;
 
-pub const MonitorFn = *const fn(monitor: *Monitor, event: Monitor.Event) callconv(.c) void;
+pub const MonitorFn = *const fn (monitor: *Monitor, event: Monitor.Event) callconv(.c) void;
 pub fn setMonitorCallback(callback: ?MonitorFn) Error!?MonitorFn {
     const return_value = glfwSetMonitorCallback(callback);
     try maybeError();

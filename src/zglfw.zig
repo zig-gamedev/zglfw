@@ -618,6 +618,8 @@ pub const Monitor = opaque {
     pub const getVideoMode = zglfw.getVideoMode;
     pub const getVideoModes = zglfw.getVideoModes;
     pub const getPhysicalSize = zglfw.getMonitorPhysicalSize;
+    pub const getUserPointer = zglfw.getMonitorUserPointer;
+    pub const setUserPointer = zglfw.setMonitorUserPointer;
 
     pub fn getPos(self: *Monitor) [2]c_int {
         var xpos: c_int = 0;
@@ -664,6 +666,16 @@ pub fn getMonitorName(monitor: *Monitor) Error![]const u8 {
     return "";
 }
 extern fn glfwGetMonitorName(monitor: *Monitor) ?[*:0]const u8;
+
+pub fn getMonitorUserPointer(monitor: *Monitor, comptime T: type) ?*T {
+    return @ptrCast(@alignCast(glfwGetMonitorUserPointer(monitor)));
+}
+extern fn glfwGetMonitorUserPointer(monitor: *Monitor) callconv(.c) ?*anyopaque;
+
+pub fn setMonitorUserPointer(monitor: *Monitor, pointer: ?*anyopaque) void {
+    glfwSetMonitorUserPointer(monitor, pointer);
+}
+extern fn glfwSetMonitorUserPointer(monitor: *Monitor, pointer: ?*anyopaque) callconv(.c) void;
 
 pub const MonitorFn = *const fn (monitor: *Monitor, event: Monitor.Event) callconv(.c) void;
 pub const setMonitorCallback = glfwSetMonitorCallback;

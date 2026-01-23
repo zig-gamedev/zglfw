@@ -873,8 +873,9 @@ pub fn createWindow(
     height: c_int,
     title: [:0]const u8,
     monitor: ?*Monitor,
+    share: ?*Window,
 ) Error!*Window {
-    if (glfwCreateWindow(width, height, title, monitor, null)) |window| return window;
+    if (glfwCreateWindow(width, height, title, monitor, share)) |window| return window;
     try maybeError();
     unreachable;
 }

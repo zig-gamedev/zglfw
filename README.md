@@ -6,6 +6,8 @@ Zig build package and bindings for [GLFW 3.4](https://github.com/glfw/glfw/relea
 
 Example `build.zig`:
 ```zig
+const std = @import("std");
+
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
@@ -21,6 +23,8 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag != .emscripten) {
         exe.linkLibrary(zglfw.artifact("glfw"));
     }
+
+    b.installArtifact(exe);
 }
 ```
 
@@ -32,11 +36,11 @@ pub fn main() !void {
     try glfw.init();
     defer glfw.terminate();
 
-    const window = try glfw.createWindow(600, 600, "zig-gamedev: minimal_glfw_gl", null);
+    const window = try glfw.createWindow(600, 600, "zig-gamedev: minimal_glfw_gl", null, null);
     defer glfw.destroyWindow(window);
 
     // or, using the equivalent, encapsulated, "objecty" API:
-    const window = try glfw.Window.create(600, 600, "zig-gamedev: minimal_glfw_gl", null);
+    const window = try glfw.Window.create(600, 600, "zig-gamedev: minimal_glfw_gl", null, null);
     defer window.destroy();
 
     // setup your graphics context here
@@ -61,28 +65,23 @@ To match types from `zglfw` functions and Vulkan library `import_vulkan` option 
 Example `build.zig` with [`vulkan-zig`](https://github.com/Snektron/vulkan-zig):
 
 ```zig
-const vulkan_headers = b.dependency("vulkan_headers");
-const vulkan = b.dependency("vulkan_zig", .{
+const vulkan_headers = b.dependency("vulkan_headers", .{});
+const vulkan = b.dependency("vulkan", .{
     .registry = vulkan_headers.path("registry/vk.xml"),
 }).module("vulkan-zig");
+exe.root_module.addImport("vulkan", vulkan);
 
-const zglfw = b.dependency("zglfw", .{ .import_vulkan = true });
+const zglfw = b.dependency("zglfw", .{
+    .target = target,
+    .optimize = optimize,
+    .import_vulkan = true,
+});
 
 const zglfw_mod = zglfw.module("root");
 zglfw_mod.addImport("vulkan", vulkan);
+exe.root_module.addImport("zglfw", zglfw_mod);
 
-const exe = b.addExecutable(.{
-    .name = "vk_setup",
-    .root_module = b.createModule(.{
-        .root_source_file = b.path("src/main.zig"),
-        .target = target,
-        .optimize = optimize,
-        .imports = &.{
-            .{ .name = "zglfw", .module = zglfw_mod },
-            .{ .name = "vulkan", .module = vulkan },
-        },
-    }),
-});
-
-exe.root_module.linkLibrary(zglfw.artifact("glfw"));
+if (target.result.os.tag != .emscripten) {
+    exe.linkLibrary(zglfw.artifact("glfw"));
+}
 ```

@@ -21,7 +21,7 @@ pub fn build(b: *std.Build) void {
     exe.root_module.addImport("zglfw", zglfw.module("root"));
 
     if (target.result.os.tag != .emscripten) {
-        exe.linkLibrary(zglfw.artifact("glfw"));
+        exe.root_module.linkLibrary(zglfw.artifact("glfw"));
     }
 
     b.installArtifact(exe);
@@ -82,6 +82,6 @@ zglfw_mod.addImport("vulkan", vulkan);
 exe.root_module.addImport("zglfw", zglfw_mod);
 
 if (target.result.os.tag != .emscripten) {
-    exe.linkLibrary(zglfw.artifact("glfw"));
+    exe.root_module.linkLibrary(zglfw.artifact("glfw"));
 }
 ```

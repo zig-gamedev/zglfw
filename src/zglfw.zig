@@ -5,7 +5,7 @@ const assert = std.debug.assert;
 const options = @import("zglfw_options");
 
 test {
-    _ = std.testing.refAllDeclsRecursive(@This());
+    std.testing.refAllDecls(@This());
 }
 
 const zglfw = @This();

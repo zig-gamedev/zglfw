@@ -16,12 +16,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        zig-version: ["0.14.0", "0.15.0", "0.16.0"]
     runs-on: ${{matrix.os}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Install Zig
         uses: mlugg/setup-zig@v2
+        with:
+          version: ${{matrix.zig-version}}
       - name: Check format
         continue-on-error: true
         run: zig fmt --check .

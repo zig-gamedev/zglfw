@@ -577,8 +577,8 @@ pub const Gamepad = enum(c_int) {
                 assert(@offsetOf(c.GLFWgamepadstate, field_name) == @offsetOf(State, field_name));
             }
         }
-        buttons: [Button.count]Joystick.ButtonAction = .{Joystick.ButtonAction.release} ** Button.count,
-        axes: [Axis.count]f32 = .{@as(f32, 0)} ** Axis.count,
+        buttons: [Button.count]Joystick.ButtonAction = @splat(.release),
+        axes: [Axis.count]f32 = @splat(0),
     };
 
     pub const getName = getGamepadName;

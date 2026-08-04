@@ -480,6 +480,11 @@ pub const Joystick = enum(c_int) {
     pub const getButtons = getJoystickButtons;
     pub const isGamepad = joystickIsGamepad;
     pub const asGamepad = joystickAsGamepad;
+
+    pub const Event = enum(c_int) {
+        connected = 0x00040001,
+        disconnected = 0x00040002,
+    };
 };
 
 pub fn joystickPresent(joystick: Joystick) bool {
@@ -524,6 +529,10 @@ extern fn glfwJoystickIsGamepad(Joystick) Bool;
 pub fn joystickAsGamepad(joystick: Joystick) ?Gamepad {
     return if (joystickIsGamepad(joystick)) @enumFromInt(@intFromEnum(joystick)) else null;
 }
+
+pub const JoystickFn = *const fn (joystick: Joystick, event: Joystick.Event) callconv(.c) void;
+pub const setJoystickCallback = glfwSetJoystickCallback;
+extern fn glfwSetJoystickCallback(callback: ?JoystickFn) ?JoystickFn;
 
 //--------------------------------------------------------------------------------------------------
 //

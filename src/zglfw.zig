@@ -104,7 +104,7 @@ else
     };
 
 pub const getInstanceProcAddress = glfwGetInstanceProcAddress;
-extern fn glfwGetInstanceProcAddress(instance: vk.Instance, procname: [*:0]const u8) ?VulkanFn;
+extern fn glfwGetInstanceProcAddress(instance: ?vk.Instance, procname: [*:0]const u8) ?VulkanFn;
 
 pub fn getPhysicalDevicePresentationSupport(
     instance: vk.Instance,

@@ -28,16 +28,26 @@ pub fn build(b: *std.Build) void {
     };
 
     const options_step = b.addOptions();
-    inline for (std.meta.fields(@TypeOf(options))) |field| {
-        options_step.addOption(field.type, field.name, @field(options, field.name));
+    const field_names = comptime std.meta.fieldNames(@TypeOf(options));
+    const field_types = comptime std.meta.fieldTypes(@TypeOf(options));
+    inline for (field_names, field_types) |field_name, field_type| {
+        options_step.addOption(field_type, field_name, @field(options, field_name));
     }
 
     const options_module = options_step.createModule();
+    const translate_c = b.addTranslateC(.{
+        .root_source_file = b.path("src/c.h"),
+        .target = target,
+        .optimize = optimize,
+    });
+    translate_c.addIncludePath(b.path("libs/glfw/include"));
+    const c_module = translate_c.createModule();
 
     const module = b.addModule("root", .{
         .root_source_file = b.path("src/zglfw.zig"),
         .imports = &.{
             .{ .name = "zglfw_options", .module = options_module },
+            .{ .name = "c", .module = c_module },
         },
     });
 
@@ -60,6 +70,7 @@ pub fn build(b: *std.Build) void {
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
     addIncludePaths(b, glfw.root_module, target, options);
+    addIncludePaths(b, translate_c, target, options);
     linkSystemLibs(b, glfw, target, options);
 
     const src_dir = "libs/glfw/src/";
@@ -190,18 +201,20 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/zglfw.zig"),
             .target = target,
             .optimize = optimize,
+            .imports = &.{
+                .{ .name = "zglfw_options", .module = options_module },
+                .{ .name = "c", .module = c_module },
+            },
         }),
     });
     addIncludePaths(b, tests.root_module, target, options);
     linkSystemLibs(b, tests, target, options);
-    tests.root_module.addImport("zglfw_options", options_module);
     tests.root_module.linkLibrary(glfw);
     b.installArtifact(tests);
     test_step.dependOn(&b.addRunArtifact(tests).step);
 }
 
 fn addIncludePaths(b: *std.Build, unit: anytype, target: std.Build.ResolvedTarget, options: anytype) void {
-    unit.addIncludePath(b.path("libs/glfw/include"));
     switch (target.result.os.tag) {
         .linux => {
             if (b.lazyDependency("system_sdk", .{})) |system_sdk| {

@@ -224,6 +224,12 @@ fn addIncludePaths(b: *std.Build, unit: anytype, target: std.Build.ResolvedTarge
                 }
             }
         },
+        .macos => {
+            if (b.lazyDependency("system_sdk", .{})) |system_sdk| {
+                unit.addFrameworkPath(system_sdk.path("macos12/System/Library/Frameworks"));
+                unit.addSystemIncludePath(system_sdk.path("macos12/usr/include"));
+            }
+        },
         else => {},
     }
 }

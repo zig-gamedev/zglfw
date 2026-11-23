@@ -73,7 +73,7 @@ pub fn build(b: *std.Build) void {
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
     addIncludePaths(b, glfw.root_module, target, options);
-    addIncludePaths(b, c_module, target, options);
+    addIncludePaths(b, translator, target, options);
     linkSystemLibs(b, glfw, target, options);
 
     const src_dir = "libs/glfw/src/";

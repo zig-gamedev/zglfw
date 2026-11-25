@@ -1,4 +1,5 @@
 const std = @import("std");
+const Translator = @import("translate_c").Translator;
 
 pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
@@ -35,13 +36,15 @@ pub fn build(b: *std.Build) void {
     }
 
     const options_module = options_step.createModule();
-    const translate_c = b.addTranslateC(.{
-        .root_source_file = b.path("src/c.h"),
+
+    const translate_c = b.dependency("translate_c", .{});
+    const translator: Translator = .init(translate_c, .{
+        .c_source_file = b.path("src/c.h"),
         .target = target,
         .optimize = optimize,
     });
-    translate_c.addIncludePath(b.path("libs/glfw/include"));
-    const c_module = translate_c.createModule();
+    translator.addIncludePath(b.path("libs/glfw/include"));
+    const c_module = translator.mod;
 
     const module = b.addModule("root", .{
         .root_source_file = b.path("src/zglfw.zig"),
@@ -70,7 +73,7 @@ pub fn build(b: *std.Build) void {
     glfw.installHeadersDirectory(b.path("libs/glfw/include"), "", .{});
 
     addIncludePaths(b, glfw.root_module, target, options);
-    addIncludePaths(b, translate_c, target, options);
+    addIncludePaths(b, translator, target, options);
     linkSystemLibs(b, glfw, target, options);
 
     const src_dir = "libs/glfw/src/";

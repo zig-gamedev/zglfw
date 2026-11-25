@@ -141,7 +141,9 @@ extern fn glfwCreateWindowSurface(
 ) c_int;
 
 /// `pub fn getTime() f64`
-pub const getTime = glfwGetTime;
+pub fn getTime() f64 {
+    return glfwGetTime();
+}
 extern fn glfwGetTime() f64;
 
 /// `pub fn setTime(time: f64) void`
